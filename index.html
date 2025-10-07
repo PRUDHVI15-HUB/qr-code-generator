@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎉 QR Code Generator | CodingNepal</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { display: flex; padding: 0 10px; min-height: 100vh; align-items: center; justify-content: center; flex-direction: column; background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); }
+    ::selection { color: #fff; background: #8e44ad; }
+    .wrapper { height: 270px; max-width: 420px; background: #ffffff; border-radius: 10px; padding: 25px; transition: height 0.2s ease; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); text-align: center; }
+    .wrapper.active { height: 550px; }
+    header { margin: 1rem; }
+    header h1 { font-size: 35px; font-weight: 600; color: #333; display: flex; align-items: center; justify-content: center; }
+    header h1::before { content: "📲 "; margin-right: 8px; }
+    header p { margin-top: 5px; color: #6b6b6b; font-size: 20px; }
+    .form { margin: 20px 0; }
+    .form input, .form button { width: 100%; height: 55px; border-radius: 8px; border: none; outline: none; font-size: 18px; transition: 0.1s ease; }
+    .form input { padding: 0 15px; border: 1px solid #ddd; }
+    .form input:focus { box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15); }
+    .form input::placeholder { color: #aaa; font-style: italic; }
+    .form button { color: #fff; font-size: 18px; cursor: pointer; background: linear-gradient(90deg, #667eea, #764ba2); transition: transform 0.1s ease; }
+    .form button:hover { transform: scale(1.02); }
+    .qr-code { opacity: 0; display: flex; padding: 30px 0; align-items: center; justify-content: center; pointer-events: none; border-radius: 8px; }
+    .wrapper.active .qr-code { opacity: 1; pointer-events: auto; transition: opacity 0.5s ease; }
+    .qr-code img { width: 180px; border: 2px solid #ddd; border-radius: 10px; }
+    .message { margin-top: 20px; font-size: 16px; color: #333; }
+    .form input, .form button { margin-top: 10px; }
+    @media (max-width: 430px) { 
+      .wrapper { height: 260px; padding: 20px; }
+      .wrapper.active { height: 520px; }
+      .form input, .form button { height: 50px; }
+      .qr-code img { width: 160px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QR Code Generator</h1>
+    <p>✨ Enter your URL or text below to create a QR code! ✨</p>
+  </header>
+  <div class="wrapper">
+    <div class="form">
+      <input type="text" placeholder="🔗 Paste your link or text here..." />
+      <button>🎉 Generate QR Code 🎉</button>
+    </div>
+    <div class="qr-code">
+      <img decoding="async" src="" alt="qr-code">
+    </div>
+    <div class="message"></div>
+  </div>
+  <script>
+    const wrapper = document.querySelector(".wrapper"),
+          qrInput = wrapper.querySelector(".form input"),
+          generateBtn = wrapper.querySelector(".form button"),
+          qrImg = wrapper.querySelector(".qr-code img"),
+          message = wrapper.querySelector(".message");
+    let preValue;
+
+    generateBtn.addEventListener("click", () => {
+      let qrValue = qrInput.value.trim();
+      if (!qrValue || preValue === qrValue) {
+        message.textContent = "⚠️ Please enter a new value to generate a QR code.";
+        return;
+      }
+      preValue = qrValue;
+      generateBtn.innerText = "⚙️ Generating...";
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrValue}`;
+      qrImg.addEventListener("load", () => {
+        wrapper.classList.add("active");
+        generateBtn.innerText = "🎉 Generate QR Code 🎉";
+        message.textContent = "✅ QR Code generated successfully!";
+      });
+    });
+
+    qrInput.addEventListener("keyup", () => {
+      if (!qrInput.value.trim()) {
+        wrapper.classList.remove("active");
+        preValue = "";
+        message.textContent = "";
+      }
+    });
+  </script>
+</body>
+</html>
